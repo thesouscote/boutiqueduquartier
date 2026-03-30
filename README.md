@@ -1,4 +1,4 @@
-# 🏘 MonQuartier — Boutiques du quartier
+# 🏘 Boutikinator — Trouvez vos boutiques
 
 Plateforme de disponibilité en temps réel des boutiques de votre quartier.
 
