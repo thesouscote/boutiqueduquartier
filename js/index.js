@@ -18,8 +18,8 @@ const db  = getFirestore(app);
 
 // === CARTE LEAFLET ===
 const map = L.map('map', { zoomControl: true }).setView([5.3600, -4.0083], 15);
-L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-  attribution: '&copy; OpenStreetMap &copy; CARTO',
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
   maxZoom: 19
 }).addTo(map);
 
@@ -216,6 +216,11 @@ function renderList(filtered) {
             <strong>${shop.close_time}</strong>
           </div>
           ${shop.phone ? `<div class="shop-phone">📞 ${shop.phone}</div>` : ''}
+          ${shop.lat && shop.lng ? `
+            <a class="shop-directions-btn" href="https://www.google.com/maps/dir/?api=1&destination=${shop.lat},${shop.lng}&travelmode=walking" target="_blank" rel="noopener" onclick="event.stopPropagation()">
+              🧭 Itinéraire
+            </a>
+          ` : ''}
         </div>
       </div>
     `;
@@ -243,6 +248,8 @@ function renderMarkers() {
     const s     = getStatus(shop);
     const color = statusColor(s);
 
+    const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${shop.lat},${shop.lng}&travelmode=walking`;
+
     const m = L.marker([shop.lat, shop.lng], { icon: makeIcon(color, s === 'urgent') })
       .addTo(map)
       .bindPopup(`
@@ -259,6 +266,9 @@ function renderMarkers() {
         ${shop.phone
           ? `<div style="font-size:12px;color:#4fc3f7;margin-top:5px">📞 ${shop.phone}</div>`
           : ''}
+        <a href="${directionsUrl}" target="_blank" rel="noopener" class="popup-directions-btn">
+          🧭 Itinéraire
+        </a>
       `);
 
     markers[shop.id] = m;
