@@ -23,7 +23,7 @@
   <div class="login-box">
     <div class="login-logo">
       <div class="login-logo-icon">🏘</div>
-      <div class="login-logo-text">Mon<span>Quartier</span></div>
+      <div class="login-logo-text">Boutik<span>inator</span></div>
     </div>
     <p class="login-subtitle">Connectez-vous à votre espace administrateur pour gérer les boutiques.</p>
     <div class="form-group">
@@ -50,7 +50,7 @@
   <div class="topbar">
     <div class="topbar-left">
       <div class="topbar-logo-icon">🏘</div>
-      <div class="topbar-logo">Mon<span>Quartier</span></div>
+      <div class="topbar-logo">Boutik<span>inator</span></div>
       <span class="topbar-badge">ADMIN</span>
     </div>
     <div class="topbar-right">
@@ -108,9 +108,10 @@
           <!-- Écran vide -->
           <div id="emptyForm" class="empty-form">
             <div class="empty-form-icon">🏪</div>
+            <h3 class="empty-form-title">Aucune boutique sélectionnée</h3>
             <p>Sélectionnez une boutique dans la liste ou créez-en une nouvelle.</p>
-            <button class="btn-save" style="width:auto;padding:11px 24px" onclick="openNew()">
-              + Nouvelle boutique
+            <button class="btn-empty-new" onclick="openNew()">
+              <span class="btn-empty-plus">+</span> Nouvelle boutique
             </button>
           </div>
 
@@ -158,11 +159,21 @@
               <div class="form-row-2">
                 <div class="form-group">
                   <label>Ouverture *</label>
-                  <input type="time" id="f-open" value="08:00">
+                  <div class="time-picker">
+                    <select id="f-open-h" class="time-select"></select>
+                    <span class="time-sep">:</span>
+                    <select id="f-open-m" class="time-select"></select>
+                  </div>
+                  <input type="hidden" id="f-open" value="08:00">
                 </div>
                 <div class="form-group">
                   <label>Fermeture *</label>
-                  <input type="time" id="f-close" value="18:00">
+                  <div class="time-picker">
+                    <select id="f-close-h" class="time-select"></select>
+                    <span class="time-sep">:</span>
+                    <select id="f-close-m" class="time-select"></select>
+                  </div>
+                  <input type="hidden" id="f-close" value="18:00">
                 </div>
               </div>
               <div class="form-group">

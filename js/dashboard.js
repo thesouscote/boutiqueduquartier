@@ -210,14 +210,62 @@ function getSelectedDays() {
 }
 
 // ============================================
+// CUSTOM 24H TIME PICKERS
+// ============================================
+
+function initTimePickers() {
+  ['f-open', 'f-close'].forEach(prefix => {
+    const hSel = document.getElementById(`${prefix}-h`);
+    const mSel = document.getElementById(`${prefix}-m`);
+    const hidden = document.getElementById(prefix);
+    if (!hSel || !mSel) return;
+
+    // Populate hours 00–23
+    hSel.innerHTML = '';
+    for (let h = 0; h < 24; h++) {
+      const val = String(h).padStart(2, '0');
+      hSel.innerHTML += `<option value="${val}">${val}</option>`;
+    }
+    // Populate minutes 00, 15, 30, 45
+    mSel.innerHTML = '';
+    [0, 15, 30, 45].forEach(m => {
+      const val = String(m).padStart(2, '0');
+      mSel.innerHTML += `<option value="${val}">${val}</option>`;
+    });
+
+    // Sync hidden input on change
+    const sync = () => { hidden.value = `${hSel.value}:${mSel.value}`; };
+    hSel.addEventListener('change', sync);
+    mSel.addEventListener('change', sync);
+  });
+}
+
+function setTimePicker(prefix, timeStr) {
+  const [h, m] = (timeStr || '08:00').split(':');
+  const hSel = document.getElementById(`${prefix}-h`);
+  const mSel = document.getElementById(`${prefix}-m`);
+  const hidden = document.getElementById(prefix);
+  if (!hSel || !mSel) return;
+  hSel.value = h.padStart(2, '0');
+  // Snap to nearest available minute option
+  const mNum = parseInt(m);
+  const available = [0, 15, 30, 45];
+  const closest = available.reduce((prev, curr) =>
+    Math.abs(curr - mNum) < Math.abs(prev - mNum) ? curr : prev
+  );
+  mSel.value = String(closest).padStart(2, '0');
+  hidden.value = `${hSel.value}:${mSel.value}`;
+}
+
+// ============================================
 // FORMULAIRE (créer / modifier)
 // ============================================
 
 function resetForm() {
   ['f-name', 'f-phone'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('f-type').value  = 'Épicerie';
-  document.getElementById('f-open').value  = '08:00';
-  document.getElementById('f-close').value = '18:00';
+  setTimePicker('f-open', '08:00');
+  setTimePicker('f-close', '18:00');
   document.getElementById('f-lat').value   = '';
   document.getElementById('f-lng').value   = '';
   document.getElementById('coordsDisplay').textContent = '📍 Aucune position définie';
@@ -259,8 +307,8 @@ window.editShop = (id) => {
   document.getElementById('f-name').value  = shop.name;
   document.getElementById('f-type').value  = shop.type;
   document.getElementById('f-phone').value = shop.phone || '';
-  document.getElementById('f-open').value  = shop.open_time;
-  document.getElementById('f-close').value = shop.close_time;
+  setTimePicker('f-open', shop.open_time);
+  setTimePicker('f-close', shop.close_time);
   document.getElementById('f-lat').value   = shop.lat || '';
   document.getElementById('f-lng').value   = shop.lng || '';
   document.getElementById('coordsDisplay').textContent = shop.lat
@@ -489,6 +537,7 @@ function showToast(msg, type = 'success') {
 // ============================================
 
 function initApp() {
+  initTimePickers();
   const q = query(collection(db, 'boutiques'), orderBy('name'));
   onSnapshot(q, snapshot => {
     shops = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
