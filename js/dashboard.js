@@ -356,8 +356,8 @@ window.saveShop = async () => {
   // Validation
   if (!name)              { showToast('⚠️ Le nom est obligatoire', 'error');              return; }
   if (!open_time || !close_time) { showToast('⚠️ Les horaires sont obligatoires', 'error'); return; }
-  if (toMin(open_time) >= toMin(close_time)) {
-    showToast('⚠️ Fermeture doit être après ouverture', 'error'); return;
+  if (toMin(open_time) === toMin(close_time)) {
+    showToast('⚠️ Ouverture et fermeture identiques', 'error'); return;
   }
   if (days.length === 0) { showToast('⚠️ Sélectionnez au moins un jour', 'error'); return; }
 

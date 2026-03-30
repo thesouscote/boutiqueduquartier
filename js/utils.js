@@ -41,6 +41,18 @@ export function formatDays(days) {
 export function isOpenToday(shop) {
   if (!shop.days || shop.days.length === 0) return true; // compatibilité ascendante
   const today = new Date().getDay(); // 0=Dim … 6=Sam
+
+  const now = nowMin();
+  const o = toMin(shop.open_time);
+  const c = toMin(shop.close_time);
+
+  // Si l'horaire traverse minuit et que nous sommes avant l'heure de fermeture,
+  // la boutique est ouverte si elle était sélectionnée pour la veille.
+  if (o > c && now < c) {
+    const yesterday = (today + 6) % 7;
+    return shop.days.includes(yesterday);
+  }
+
   return shop.days.includes(today);
 }
 
@@ -70,8 +82,29 @@ export function getStatus(shop) {
   const now = nowMin();
   const o = toMin(shop.open_time);
   const c = toMin(shop.close_time);
-  if (now < o || now >= c) return 'closed';
-  const rem = c - now;
+
+  let isOpen = false;
+  let rem = 0;
+
+  if (o < c) {
+    // Horaires classiques dans la même journée
+    if (now >= o && now < c) {
+      isOpen = true;
+      rem = c - now;
+    }
+  } else if (o > c) {
+    // Horaires traversant minuit (ex: 18h00 - 02h00)
+    if (now >= o) {
+      isOpen = true;
+      rem = (24 * 60 - now) + c;
+    } else if (now < c) {
+      isOpen = true;
+      rem = c - now;
+    }
+  }
+
+  if (!isOpen) return 'closed';
+
   if (rem <= 10) return 'urgent';
   if (rem <= 30) return 'closing';
   return 'open';
@@ -90,7 +123,19 @@ export function statusLabel(s, shop) {
   if (s === 'dayoff') return 'Repos';
   if (s === 'closed') return 'Fermé';
   if (s === 'open')   return 'Ouvert';
-  const rem = toMin(shop.close_time) - nowMin();
+  
+  const now = nowMin();
+  const o = toMin(shop.open_time);
+  const c = toMin(shop.close_time);
+  let rem = 0;
+  
+  if (o < c) {
+    rem = c - now;
+  } else if (o > c) {
+    if (now >= o) rem = (24 * 60 - now) + c;
+    else rem = c - now;
+  }
+  
   return `Ferme dans ${rem}min`;
 }
 
