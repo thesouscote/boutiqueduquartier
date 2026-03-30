@@ -23,6 +23,91 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
   maxZoom: 19
 }).addTo(map);
 
+// === GÉOLOCALISATION UTILISATEUR ===
+let userMarker = null;
+let userCircle = null;
+
+function locateUser() {
+  const btn = document.getElementById('locateBtn');
+  if (btn) { btn.classList.add('locating'); btn.textContent = '⏳'; }
+
+  if (!navigator.geolocation) {
+    alert('La géolocalisation n\'est pas supportée par votre navigateur.');
+    if (btn) { btn.classList.remove('locating'); btn.textContent = '📍'; }
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      const { latitude: lat, longitude: lng, accuracy } = pos.coords;
+
+      // Remove previous markers
+      if (userMarker) map.removeLayer(userMarker);
+      if (userCircle) map.removeLayer(userCircle);
+
+      // Blue pulsing dot for user position
+      userMarker = L.marker([lat, lng], {
+        icon: L.divIcon({
+          className: '',
+          html: `<div class="user-position-dot"><div class="user-position-pulse"></div></div>`,
+          iconSize: [20, 20],
+          iconAnchor: [10, 10]
+        }),
+        zIndexOffset: 1000
+      }).addTo(map)
+        .bindPopup('<div style="font-weight:700;font-size:14px;color:#60a5fa">📍 Vous êtes ici</div><div style="font-size:12px;color:#94a3b8">Précision: ~' + Math.round(accuracy) + 'm</div>');
+
+      // Accuracy circle
+      userCircle = L.circle([lat, lng], {
+        radius: accuracy,
+        color: '#3b82f6',
+        fillColor: '#3b82f6',
+        fillOpacity: 0.08,
+        weight: 1.5,
+        opacity: 0.3
+      }).addTo(map);
+
+      map.setView([lat, lng], 16, { animate: true });
+      userMarker.openPopup();
+
+      if (btn) { btn.classList.remove('locating'); btn.textContent = '📍'; }
+    },
+    (err) => {
+      let msg = 'Impossible de déterminer votre position.';
+      if (err.code === 1) msg = 'Veuillez autoriser l\'accès à votre position dans les paramètres du navigateur.';
+      else if (err.code === 2) msg = 'Position indisponible. Vérifiez votre GPS/connexion.';
+      else if (err.code === 3) msg = 'Délai de localisation dépassé. Réessayez.';
+      alert(msg);
+      if (btn) { btn.classList.remove('locating'); btn.textContent = '📍'; }
+    },
+    { enableHighAccuracy: true, timeout: 10000, maximumAge: 30000 }
+  );
+}
+
+// Add locate button to map
+function addLocateButton() {
+  const locateControl = L.Control.extend({
+    options: { position: 'topright' },
+    onAdd: function () {
+      const container = L.DomUtil.create('div', 'leaflet-bar locate-control');
+      const btn = L.DomUtil.create('a', 'locate-btn', container);
+      btn.id = 'locateBtn';
+      btn.href = '#';
+      btn.title = 'Ma position';
+      btn.textContent = '📍';
+      btn.setAttribute('role', 'button');
+      L.DomEvent.disableClickPropagation(container);
+      L.DomEvent.on(btn, 'click', function (e) {
+        L.DomEvent.preventDefault(e);
+        locateUser();
+      });
+      return container;
+    }
+  });
+  map.addControl(new locateControl());
+}
+addLocateButton();
+
 let markers = {};
 
 function makeIcon(color, isUrgent = false) {
