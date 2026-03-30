@@ -417,12 +417,12 @@
 .time-picker {
   display: flex;
   align-items: center;
-  gap: 0;
   background: var(--dark3);
   border: 1px solid var(--border);
   border-radius: 10px;
   overflow: hidden;
   transition: border-color 0.2s, box-shadow 0.2s;
+  height: 44px;
 }
 .time-picker:focus-within {
   border-color: var(--accent);
@@ -430,30 +430,34 @@
 }
 .time-select {
   flex: 1;
+  min-width: 0;
   background: transparent;
   border: none;
   color: var(--text);
-  padding: 11px 8px 11px 14px;
-  font-size: 14px;
+  padding: 0 10px;
+  height: 100%;
+  font-size: 15px;
   font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 600;
   font-variant-numeric: tabular-nums;
   outline: none;
   cursor: pointer;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
   text-align: center;
+  -webkit-appearance: none;
+  appearance: none;
 }
 .time-select option {
   background: var(--dark3);
   color: var(--text);
+  padding: 4px 8px;
 }
 .time-sep {
-  color: var(--muted2);
-  font-size: 16px;
-  font-weight: 700;
+  color: var(--accent);
+  font-size: 18px;
+  font-weight: 800;
   user-select: none;
   flex-shrink: 0;
+  padding: 0 2px;
 }
 
 /* === RESPONSIVE === */

@@ -213,7 +213,10 @@ function getSelectedDays() {
 // CUSTOM 24H TIME PICKERS
 // ============================================
 
+let _timePickersInit = false;
+
 function initTimePickers() {
+  if (_timePickersInit) return;
   ['f-open', 'f-close'].forEach(prefix => {
     const hSel = document.getElementById(`${prefix}-h`);
     const mSel = document.getElementById(`${prefix}-m`);
@@ -224,7 +227,7 @@ function initTimePickers() {
     hSel.innerHTML = '';
     for (let h = 0; h < 24; h++) {
       const val = String(h).padStart(2, '0');
-      hSel.innerHTML += `<option value="${val}">${val}</option>`;
+      hSel.innerHTML += `<option value="${val}">${val}h</option>`;
     }
     // Populate minutes 00, 15, 30, 45
     mSel.innerHTML = '';
@@ -238,9 +241,12 @@ function initTimePickers() {
     hSel.addEventListener('change', sync);
     mSel.addEventListener('change', sync);
   });
+  _timePickersInit = true;
 }
 
 function setTimePicker(prefix, timeStr) {
+  // Ensure pickers are initialized
+  initTimePickers();
   const [h, m] = (timeStr || '08:00').split(':');
   const hSel = document.getElementById(`${prefix}-h`);
   const mSel = document.getElementById(`${prefix}-m`);
