@@ -87,7 +87,7 @@ function locateUser() {
 // Add locate button to map
 function addLocateButton() {
   const locateControl = L.Control.extend({
-    options: { position: 'topright' },
+    options: { position: 'bottomright' },
     onAdd: function () {
       const container = L.DomUtil.create('div', 'leaflet-bar locate-control');
       const btn = L.DomUtil.create('a', 'locate-btn', container);
@@ -182,26 +182,10 @@ function renderList(filtered) {
   const sorted = [...filtered].sort((a, b) => order[getStatus(a)] - order[getStatus(b)]);
 
   list.innerHTML = '';
-  let lastSection = null;
 
   sorted.forEach((shop, i) => {
     const s     = getStatus(shop);
     const color = statusColor(s);
-
-    // Séparateurs de section
-    const section = s === 'open' ? 'open' : (s === 'closing' || s === 'urgent') ? 'soon' : 'closed';
-    if (section !== lastSection) {
-      lastSection = section;
-      const labels = {
-        open:   '✅ Ouvertes maintenant',
-        soon:   '⏳ Ferment bientôt',
-        closed: '💤 Fermées / Repos'
-      };
-      const labelEl = document.createElement('div');
-      labelEl.className   = 'section-label';
-      labelEl.textContent = labels[section];
-      list.appendChild(labelEl);
-    }
 
     const div = document.createElement('div');
     div.className           = 'shop-card';
