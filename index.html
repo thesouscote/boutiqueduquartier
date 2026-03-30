@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MonQuartier — Boutiques de votre quartier</title>
+  <meta name="description" content="Consultez en temps réel les boutiques de votre quartier : horaires, disponibilité, localisation sur carte.">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/common.css">
+  <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">
+    <div class="nav-logo-icon">🏘</div>
+    Mon<span>Quartier</span>
+  </div>
+  <div class="nav-center">
+    <div class="nav-time">
+      <span class="nav-time-dot"></span>
+      Il est <strong id="navClock">--:--</strong>
+    </div>
+  </div>
+  <a href="dashboard.html">
+    <button class="nav-admin-btn">⚙ Admin</button>
+  </a>
+</nav>
+
+<div class="hero">
+  <div class="hero-eyebrow">Disponibilité en temps réel</div>
+  <h1>Les boutiques<br>de <span class="hl">ton quartier</span></h1>
+  <p class="hero-sub">Horaires, statuts, localisation — mis à jour automatiquement toutes les 30 secondes.</p>
+
+  <div class="stats-strip">
+    <div class="stat-chip green">
+      <span class="dot" style="background:var(--green)"></span>
+      <span class="count" id="cntOpen">0</span> ouvertes
+    </div>
+    <div class="stat-chip orange">
+      <span class="dot" style="background:var(--orange)"></span>
+      <span class="count" id="cntClosing">0</span> ferment bientôt
+    </div>
+    <div class="stat-chip">
+      <span class="dot" style="background:var(--muted)"></span>
+      <span class="count" id="cntClosed">0</span> fermées
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" class="search-input" id="searchInput"
+             placeholder="Rechercher une boutique…"
+             oninput="applyFilters()">
+    </div>
+    <div class="filters" id="filters">
+      <button class="filter-btn active" data-cat="Tous">Tous</button>
+    </div>
+  </div>
+</div>
+
+<div class="main-layout">
+  <div>
+    <div class="shop-list" id="shopList">
+      <div class="loading-state">
+        <div class="spinner"></div> Chargement des boutiques…
+      </div>
+    </div>
+  </div>
+  <div class="map-wrap">
+    <div id="map"></div>
+  </div>
+</div>
+
+<!-- Leaflet + JS module -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script type="module" src="js/index.js"></script>
+</body>
+</html>

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Admin — MonQuartier</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/common.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+
+<!-- ===== LOGIN ===== -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="login-logo-icon">🏘</div>
+      <div class="login-logo-text">Mon<span>Quartier</span></div>
+    </div>
+    <p class="login-subtitle">Connectez-vous à votre espace administrateur pour gérer les boutiques.</p>
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" id="loginEmail" placeholder="admin@monquartier.ci">
+    </div>
+    <div class="form-group">
+      <label>Mot de passe</label>
+      <input type="password" id="loginPwd" placeholder="••••••••"
+             onkeydown="if(event.key==='Enter') doLogin()">
+    </div>
+    <button class="btn-primary" onclick="doLogin()">Se connecter →</button>
+    <p class="login-error" id="loginErr">❌ Email ou mot de passe incorrect</p>
+    <p class="login-loading" id="loginLoading">
+      <span class="spinner" style="width:14px;height:14px"></span> Connexion…
+    </p>
+  </div>
+</div>
+
+<!-- ===== APP ===== -->
+<div id="app" style="display:flex;flex-direction:column;min-height:100vh">
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-logo-icon">🏘</div>
+      <div class="topbar-logo">Mon<span>Quartier</span></div>
+      <span class="topbar-badge">ADMIN</span>
+    </div>
+    <div class="topbar-right">
+      <div class="user-pill">
+        <div class="user-avatar">👤</div>
+        <span id="userEmail">admin</span>
+      </div>
+      <a href="index.html" target="_blank" style="text-decoration:none">
+        <button class="btn-sm btn-outline-sm">👁 Site public</button>
+      </a>
+      <button class="btn-sm btn-accent-sm" onclick="openNew()">+ Nouvelle boutique</button>
+      <button class="btn-sm btn-outline-sm" onclick="doLogout()">Déconnexion</button>
+    </div>
+  </div>
+
+  <!-- Layout principal -->
+  <div class="layout">
+
+    <!-- Panneau gauche : liste boutiques -->
+    <div class="left-panel">
+      <div class="panel-header">
+        <div class="panel-header-top">
+          <h2>Boutiques <span class="count-badge" id="shopCount">0</span></h2>
+          <button class="btn-sm btn-accent-sm"
+                  onclick="openNew()"
+                  style="padding:5px 12px;font-size:12px">+ Ajouter</button>
+        </div>
+        <p>Gérez les boutiques de votre quartier</p>
+      </div>
+      <div class="search-bar-panel">
+        <input type="text" id="searchInput"
+               placeholder="🔍  Rechercher par nom ou type…"
+               oninput="renderShopList()">
+      </div>
+      <div class="shop-scroll" id="shopScroll">
+        <div style="text-align:center;padding:40px;color:var(--muted)">
+          <div class="spinner" style="margin:0 auto 12px"></div>
+          <p style="font-size:13px">Chargement…</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panneau droit : onglets -->
+    <div class="right-panel">
+      <div class="tabs">
+        <button class="tab-btn active" id="tab-form"  onclick="switchTab('form')">✏️ Modifier</button>
+        <button class="tab-btn"        id="tab-map"   onclick="switchTab('map')">🗺 Carte</button>
+        <button class="tab-btn"        id="tab-stats" onclick="switchTab('stats')">📊 Statistiques</button>
+      </div>
+
+      <!-- Onglet : Formulaire -->
+      <div id="formTab" style="display:flex;flex-direction:column;flex:1;overflow:hidden">
+        <div class="form-panel" id="formPanel">
+
+          <!-- Écran vide -->
+          <div id="emptyForm" class="empty-form">
+            <div class="empty-form-icon">🏪</div>
+            <p>Sélectionnez une boutique dans la liste ou créez-en une nouvelle.</p>
+            <button class="btn-save" style="width:auto;padding:11px 24px" onclick="openNew()">
+              + Nouvelle boutique
+            </button>
+          </div>
+
+          <!-- Formulaire boutique -->
+          <div id="shopForm" style="display:none">
+            <div class="form-title">
+              <span id="formTitleText">Nouvelle boutique</span>
+              <span class="form-badge" id="formBadge">Nouveau</span>
+            </div>
+
+            <!-- Section : Infos générales -->
+            <div class="form-section">
+              <div class="form-section-title">Informations générales</div>
+              <div class="form-group">
+                <label>Nom de la boutique *</label>
+                <input type="text" id="f-name" placeholder="Ex: Épicerie Kouamé">
+              </div>
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label>Catégorie *</label>
+                  <select id="f-type">
+                    <option>Épicerie</option>
+                    <option>Pharmacie</option>
+                    <option>Boulangerie</option>
+                    <option>Pressing</option>
+                    <option>Téléphonie</option>
+                    <option>Coiffeur</option>
+                    <option>Restaurant</option>
+                    <option>Maquis</option>
+                    <option>Quincaillerie</option>
+                    <option>Couture</option>
+                    <option>Autre</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Téléphone</label>
+                  <input type="tel" id="f-phone" placeholder="+225 07 00 00 00">
+                </div>
+              </div>
+            </div>
+
+            <!-- Section : Horaires -->
+            <div class="form-section">
+              <div class="form-section-title">Horaires d'ouverture</div>
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label>Ouverture *</label>
+                  <input type="time" id="f-open" value="08:00">
+                </div>
+                <div class="form-group">
+                  <label>Fermeture *</label>
+                  <input type="time" id="f-close" value="18:00">
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Jours d'ouverture</label>
+                <div class="days-grid" id="daysGrid"></div>
+                <p style="font-size:11px;color:var(--muted);margin-top:8px">
+                  Sélectionnez les jours où la boutique est ouverte
+                </p>
+              </div>
+            </div>
+
+            <!-- Section : Localisation -->
+            <div class="form-section">
+              <div class="form-section-title">Localisation sur la carte</div>
+              <div class="form-group">
+                <div id="mapPicker"></div>
+                <p class="map-hint">👆 Cliquez sur la carte pour placer la boutique</p>
+                <div class="coords-display" id="coordsDisplay">📍 Aucune position définie</div>
+                <button class="btn-locate" onclick="locateMe()">📡 Ma position actuelle</button>
+                <input type="hidden" id="f-lat">
+                <input type="hidden" id="f-lng">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Barre d'actions -->
+        <div class="form-actions-bar" id="formActions" style="display:none">
+          <button class="btn-cancel" onclick="cancelForm()">Annuler</button>
+          <button class="btn-save" id="saveBtn" onclick="saveShop()">💾 Enregistrer</button>
+        </div>
+      </div>
+
+      <!-- Onglet : Carte vue d'ensemble -->
+      <div id="mapTab" style="display:none;flex:1">
+        <div id="mapOverview"></div>
+      </div>
+
+      <!-- Onglet : Statistiques -->
+      <div id="statsTab" style="display:none">
+        <div class="stats-header">
+          <h3>📊 Tableau de bord</h3>
+          <p>Vue d'ensemble de vos boutiques</p>
+        </div>
+        <div class="stats-grid" id="statsGrid"></div>
+        <div class="stats-section-title">Par catégorie</div>
+        <div class="category-list" id="categoryList"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Notification toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Leaflet + JS module -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script type="module" src="js/dashboard.js"></script>
+</body>
+</html>
