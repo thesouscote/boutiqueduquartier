@@ -461,13 +461,164 @@
 }
 
 /* === RESPONSIVE === */
+
+/* Tablet */
 @media (max-width: 900px) {
-  .layout { grid-template-columns: 1fr; }
-  .left-panel { max-height: 42vh; }
-  .form-row-2 { grid-template-columns: 1fr; }
-  .topbar { padding: 0 14px; }
-  .topbar-right { gap: 6px; }
-  .topbar-right .btn-sm { padding: 5px 10px; font-size: 11px; }
-  .user-pill { display: none; }
-  .stats-grid { grid-template-columns: 1fr; }
+  .layout { grid-template-columns: 1fr; height: auto; min-height: calc(100vh - 62px); }
+  .left-panel { max-height: 35vh; border-right: none; border-bottom: 1px solid var(--border); }
+  .right-panel { min-height: 50vh; }
+  .form-row-2 { grid-template-columns: 1fr 1fr; }
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+
+  /* --- TOPBAR --- */
+  .topbar {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 10px 12px;
+    gap: 8px;
+  }
+  .topbar-left {
+    flex: 1;
+    min-width: 0;
+  }
+  .topbar-logo { font-size: 15px; }
+  .topbar-logo-icon { width: 28px; height: 28px; font-size: 14px; border-radius: 7px; }
+  .topbar-badge { font-size: 8px; padding: 2px 7px; }
+  .topbar-right {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  /* Hide non-essential buttons on mobile */
+  .topbar-right .user-pill { display: none; }
+  .topbar-right a[href="index.html"] { display: none; }
+  .topbar-right .btn-sm {
+    padding: 6px 10px;
+    font-size: 11px;
+    border-radius: 7px;
+  }
+
+  /* --- LAYOUT --- */
+  .layout {
+    grid-template-columns: 1fr;
+    height: auto;
+    min-height: calc(100vh - 56px);
+  }
+
+  /* --- LEFT PANEL (shop list) --- */
+  .left-panel {
+    max-height: 32vh;
+    min-height: 140px;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+  .panel-header { padding: 12px 14px 10px; }
+  .panel-header h2 { font-size: 14px; }
+  .panel-header p { font-size: 11px; }
+  .search-bar-panel { padding: 8px 12px; }
+  .search-bar-panel input { padding: 8px 10px; font-size: 12px; border-radius: 7px; }
+  .shop-scroll { padding: 8px; }
+  .shop-row { padding: 10px 11px; gap: 10px; border-radius: 9px; margin-bottom: 5px; }
+  .shop-row-name { font-size: 12px; }
+  .shop-row-meta { font-size: 10px; }
+  .shop-row-actions { opacity: 1; }
+  .icon-btn { width: 30px; height: 30px; font-size: 13px; }
+
+  /* --- RIGHT PANEL --- */
+  .right-panel { min-height: 55vh; }
+
+  /* --- TABS --- */
+  .tabs { padding: 0 12px; gap: 2px; }
+  .tab-btn { padding: 12px 12px; font-size: 12px; gap: 4px; }
+
+  /* --- FORM --- */
+  .form-panel { padding: 16px 14px; }
+  .form-title { font-size: 16px; margin-bottom: 16px; }
+  .form-badge { font-size: 10px; padding: 2px 7px; }
+  .form-section { margin-bottom: 18px; }
+  .form-section-title { font-size: 10px; letter-spacing: 1px; margin-bottom: 10px; }
+  .form-group { margin-bottom: 12px; }
+  .form-group label { font-size: 10px; margin-bottom: 5px; letter-spacing: 0.6px; }
+  .form-group input,
+  .form-group select,
+  .form-group textarea { padding: 10px 12px; font-size: 13px; border-radius: 8px; }
+  .form-row-2 { grid-template-columns: 1fr; gap: 0; }
+
+  /* --- TIME PICKER --- */
+  .time-picker { height: 42px; border-radius: 8px; }
+  .time-select { font-size: 14px; padding: 0 8px; }
+  .time-sep { font-size: 16px; }
+
+  /* --- DAYS --- */
+  .days-grid { grid-template-columns: repeat(7, 1fr); gap: 4px; }
+  .day-toggle label { padding: 6px 2px; font-size: 9px; border-radius: 8px; }
+  .day-toggle label .day-num { font-size: 7px; }
+
+  /* --- MAP PICKER --- */
+  #mapPicker { height: 180px; border-radius: 10px; }
+  .map-hint { font-size: 11px; }
+  .coords-display { font-size: 11px; }
+  .btn-locate { font-size: 11px; padding: 5px 10px; border-radius: 7px; }
+
+  /* --- FORM ACTIONS BAR --- */
+  .form-actions-bar {
+    padding: 12px 14px;
+    gap: 8px;
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
+  }
+  .btn-cancel { padding: 10px 14px; font-size: 12px; border-radius: 8px; }
+  .btn-save { padding: 10px; font-size: 13px; border-radius: 8px; }
+
+  /* --- STATS --- */
+  #statsTab { padding: 16px 14px; }
+  .stats-header h3 { font-size: 15px; }
+  .stats-header p { font-size: 12px; }
+  .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .stat-card { padding: 16px; border-radius: 12px; }
+  .stat-icon { font-size: 20px; margin-bottom: 8px; }
+  .stat-label { font-size: 10px; }
+  .stat-num { font-size: 26px; }
+  .stat-sub { font-size: 11px; }
+  .category-list { gap: 6px; }
+  .cat-row { padding: 10px 12px; border-radius: 10px; }
+  .cat-row-icon { font-size: 16px; }
+  .cat-row-name { font-size: 12px; }
+
+  /* --- EMPTY STATE --- */
+  .empty-form { padding: 24px 16px; }
+  .empty-form-icon { font-size: 40px; }
+  .empty-form-title { font-size: 14px; }
+  .empty-form p { font-size: 12px; }
+  .btn-empty-new { padding: 10px 20px; font-size: 13px; }
+
+  /* --- MAP OVERVIEW --- */
+  #mapTab { min-height: 50vh; }
+
+  /* --- TOAST --- */
+  .toast {
+    top: auto;
+    bottom: 20px;
+    right: 12px;
+    left: 12px;
+    max-width: none;
+    font-size: 12px;
+    padding: 10px 14px;
+  }
+
+  /* --- LOGIN --- */
+  .login-box {
+    width: calc(100vw - 32px);
+    max-width: 360px;
+    padding: 30px 24px;
+    border-radius: 18px;
+  }
+  .login-logo-text { font-size: 19px; }
+  .login-logo-icon { width: 36px; height: 36px; font-size: 18px; }
+  .login-subtitle { font-size: 12px; margin-bottom: 24px; }
 }
